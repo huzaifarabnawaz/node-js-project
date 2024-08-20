@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>this is get method </title>
+</head>
+<body>
+        
+    <table border="1" width="100%">
+
+        
+        <% if(user.length > 0) { %>
+            <% for(let i = 0; i < user.length; i++) { %>
+
+        
+                <tr>
+                    <td><%= user[i].id %></td>
+                    <td><%= user[i].email %></td>
+                    <td><%= user[i].name %></td>
+                    <td><%= user[i].age %></td>
+
+                    <td><a href="/delete-user?id=<%= user[i].id %>">delete</a></td>
+                    <td><a href="/updateuser?id=<%= user[i].id %>">update</a></td>
+                
+                </tr>
+                
+
+
+            <% } %>
+
+        <% } else { %>
+            <tr>
+                <!-- <td colspan="4">No users found.</td> -->
+            </tr>
+        <% } %>
+    
+        
+    </table>
+            
+
+    </table>
+
+</body>
+</html>
+
+
+
+
