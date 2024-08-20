@@ -1,12 +1,13 @@
 
-var connect = require("./routes/dbconnect");
+const connect = require("./routes/dbconnect");
 const express = require("express");
 const app = express();
 
-var bodyparser = require("body-parser");
+const bodyparser = require("body-parser");
 
 app.set('view engine', "ejs");
 app.use(bodyparser.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.get("/", (req, res) => {
     try {
@@ -21,19 +22,19 @@ app.get("/", (req, res) => {
 
 app.post("/", (req, res) => {
     try {
-    var email = req.body.email;
-    var name = req.body.name;
-    var age = req.body.age;
-
+        var email = req.body.email;
+        var name = req.body.name;
+        var age = req.body.age;
+        console.log(email, name, age);
 
         connect.getConnection(function (error) {
             if (error) throw error;
 
             var sql = "INSERT INTO `formpr` (`email`, `name`, `age`) VALUE('" + email + "','" + name + "','" + age + "')";
-            connect.query(sql, function (error, result) {   
+            connect.query(sql, function (error, result) {
                 if (error) throw error;
-                res.redirect("/user")
-
+                // res.redirect("/user")
+                res.json(result);
             });
         });
 
@@ -56,6 +57,7 @@ app.get("/user", (req, res) => {
                 if (error) console.log(error);
                 // console.log(result)
                 res.render(__dirname + '/user', { user: result });
+                res.json(result);
             });
         });
 
@@ -105,7 +107,7 @@ app.get("/updateuser", (req, res) => {
 
             connect.query(sql, [id], function (error, result) {
                 if (error) console.log(error);
-                res.render(__dirname+"/updateuser",{user:result})
+                res.render(__dirname + "/updateuser", { user: result })
 
             });
         });
@@ -123,7 +125,7 @@ app.get("/updateuser", (req, res) => {
 //     var username=req.body.name
 //     var userage=req.body.age 
 
-    
+
 //     connect.getConnection(function(error){
 //         if(error) throw error
 
@@ -136,7 +138,7 @@ app.get("/updateuser", (req, res) => {
 //         })  
 
 //     })
-    
+
 // } )
 
 
@@ -148,22 +150,33 @@ app.post("/updateuser", (req, res) => {
     var username = req.body.name;
     var userage = req.body.age;
 
-    connect.getConnection(function(error) {
+    connect.getConnection(function (error) {
         if (error) throw error;
 
-        var sql = "UPDATE formpr SET name=?, email=?, age=? WHERE id=?";
-
-        connect.query(sql, [username, useremail, userage, userid], function(error, result) {
+        var sql = `UPDATE formpr SET name='${username}', email='${useremail}', age='${userage}' WHERE id=${userid}`;
+        console.log(sql);
+        connect.query(sql, [username, useremail, userage, userid], function (error, result) {
             if (error) {
                 console.log(error);
+                res.json(error);
             } else {
                 console.log(result);
-                res.redirect("/user");
+                // res.redirect("/user");
+                    res.json(result)
             }
         });
     });
 });
 
 
+app.get("/datacheck", (req, res) => {
+    console.log(req.body)
+    res.json(req.body)
+})
+            
+
+
 app.listen(4000)
 console.log("server is runing ")
+
+
