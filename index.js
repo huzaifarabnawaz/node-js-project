@@ -5,9 +5,12 @@ const app = express();
 
 const bodyparser = require("body-parser");
 
+app.use(express.json());
 app.set('view engine', "ejs");
 app.use(bodyparser.urlencoded({ extended: true }));
-app.use(express.json());
+
+app.listen(4000)
+console.log("server is runing ")
 
 app.get("/", (req, res) => {
     try {
@@ -20,7 +23,7 @@ app.get("/", (req, res) => {
 
 });
 
-app.post("/", (req, res) => {
+app.post("/userpost", (req, res) => {
     try {
         var email = req.body.email;
         var name = req.body.name;
@@ -68,29 +71,35 @@ app.get("/user", (req, res) => {
 });
 
 
-app.get("/delete-user", (req, res) => {
+app.get("/deleteUser", (req, res) => {
     console.log('in delete user')
     try {
 
         connect.getConnection(function (error) {
             if (error) throw error;
 
-            var sql = "DELETE FROM `formpr` WHERE `formpr`.`id`=?";
-
+            
             var id = req.query.id
 
-            connect.query(sql, [id], function (error, result) {
+            const sql = `DELETE FROM formpr WHERE id =${id} `;
+
+            connect.query(sql, function (error, result) {
                 if (error) console.log(error);
-                res.redirect('/user');
+                // res.redirect('/user');
+                res.send(result)
             });
         });
-
+        
     } catch (error) {
         console.log(error);
     }
-
+    
 
 })
+
+
+
+
 
 
 
@@ -101,9 +110,9 @@ app.get("/updateuser", (req, res) => {
         connect.getConnection(function (error) {
             if (error) throw error;
 
+            var id = req.query.id
             var sql = "SELECT * FROM `formpr` WHERE id=?";
 
-            var id = req.query.id
 
             connect.query(sql, [id], function (error, result) {
                 if (error) console.log(error);
@@ -160,7 +169,7 @@ app.post("/updateuser", (req, res) => {
                 console.log(error);
                 res.json(error);
             } else {
-                console.log(result);
+                console.log(result); 
                 // res.redirect("/user");
                     res.json(result)
             }
@@ -169,14 +178,9 @@ app.post("/updateuser", (req, res) => {
 });
 
 
-app.get("/datacheck", (req, res) => {
-    console.log(req.body)
-    res.json(req.body)
-})
             
 
 
-app.listen(4000)
-console.log("server is runing ")
+
 
 
